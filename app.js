@@ -1,6 +1,7 @@
+var cheerio = require('cheerio')
+var request = require('request')
+
 request("https://www.gamespot.com/articles/e3-2018-schedule-for-press-conferences-ea-play-bet/1100-6458180/")
-
-
 
 // var $ = cheerio.load(html);
 
@@ -16,6 +17,6 @@ $("#masthead").each(function(i, element){
         header: header,
         link: link
     });
+    console.log(results);
 
 });
-console.log(results);
