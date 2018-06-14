@@ -8,6 +8,7 @@ var parser = require('body-parser');
 var cheerio = require('cheerio');
 var request = require('request');
 var mongojs = require('mongojs');
+var path = require('path');
 
 // EXPRESS
 var app = express();
@@ -43,13 +44,19 @@ app.get("/all", function(req,res){
 // Scraping from the website into the db
 app.get("/scrape",function(req,res){
     request("https://www.gamespot.com/articles/e3-2018-schedule-for-press-conferences-ea-play-bet/1100-6458180/", function(error,response,html) {
-
+       // console.log("INSIDE REQUEST")
         // A CHEERIO for scraping
         var $ = cheerio.load(html);
+        console.log($)
         //Scraping for the main header
         $("#masthead").each(function(i, element){
-            var head = $(element).children("a").text();
+           // console.log("INSIDE MASTHEAD!")
+           // var head = $(element).children("a").text();
+           var head = $(element).children('.container').children(".masthead-nav").children(".nav-bar").children(".nav-bar__item").children(".js-click-tag").text();
+           console.log("HEAD: "+ head)
             var link = $(element).children("a").attr("href");
+            $("#masthead").text(head)
+            
 
             if(head && link) {
                 db.elements.insert({
@@ -65,12 +72,11 @@ app.get("/scrape",function(req,res){
                     }
                 });
             }
-            res.send("The work is DONE");
-        
+            });
         });
+        res.sendfile(path.join(__dirname,"./public/index.html"))
     });
 
-    app.listen(3000, function(){
-        console.log("App running on port 3000");
-    }
+app.listen(3000, function(){
+console.log("App running on port 3000");
 });
